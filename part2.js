@@ -11,7 +11,6 @@ const url = "mongodb://localhost:27017"
 
 const dbName = "Movie";
 const collectionName = "b04902077";
-var movieobj = require("./data.json");
 //console.log(obj[0]);
 
 MongoClient.connect(url, (err, client) => {
@@ -27,18 +26,43 @@ MongoClient.connect(url, (err, client) => {
             console.log("Collection " + collectionName + " NOT FOUND!");
             return;
         }
-        collection.insertMany(movieobj);
-
-        var filter = { "state": { $eq: false} };
-        var update = { $set: { "state": true} };
-        collection.updateMany(filter, update, (err, result) => {
+        var illegal = [];
+        collection.find().toArray( (err, docs) => {
+            
+            if(err){
+                console.log("Error in find_toArray");
+                return;
+            }
+            var len = docs.length;
+            for(var i = 0; i<len;i++){
+                var time_string = docs[i]['time'];
+                var atime = parseInt(time_string.slice(0,2))*60 + parseInt(time_string.slice(3,5));
+                var btime = parseInt(time_string.slice(6,8))*60 + parseInt(time_string.slice(9,11));
+                console.log(atime, btime)
+                if(btime-atime > 240 || btime - atime < 0) illegal.push(docs[i]._id);          
+            }
+            
+            var filter = { "_id": { $in: illegal} };
+            collection.remove(filter, (err, result) => {
+                if(err){
+                    console.log("Fail Update");
+                    return;
+                }
+                console.log("Removed " + result.nRemoved + " Entries.");
+                console.log(result);
+            });
+            
+        });
+        /*
+        var filter = { "_id": { $in: illegal} };
+        collection.remove(filter, (err, result) => {
             if(err){
                 console.log("Fail Update");
                 return;
             }
-            console.log("Updated " + result.modifiedCount + " Entries.");
-        });
-
+            console.log("Removed " + result.nRemoved + " Entries.");
+            console.log(result);
+        });*/
     });
 
 
