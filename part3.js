@@ -7,11 +7,10 @@
 const MongoClient = require('mongodb').MongoClient;
 const fs = require('fs');
 const path = require('path');
-const url = "mongodb://localhost:27017"
+const url = "mongodb://140.112.28.194:27017/Movie"
 
 const dbName = "Movie";
 const collectionName = "b04902077";
-var movieobj = require("./data.json");
 //console.log(obj[0]);
 
 MongoClient.connect(url, (err, client) => {
@@ -36,6 +35,7 @@ MongoClient.connect(url, (err, client) => {
                 return;
             }
             console.log("Updated " + result.modifiedCount + " Entries.");
+            client.close();
         });
 
     });

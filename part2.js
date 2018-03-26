@@ -7,7 +7,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const fs = require('fs');
 const path = require('path');
-const url = "mongodb://localhost:27017"
+const url = "mongodb://140.112.28.194:27017/Movie"
 
 const dbName = "Movie";
 const collectionName = "b04902077";
@@ -35,11 +35,15 @@ MongoClient.connect(url, (err, client) => {
             }
             var len = docs.length;
             for(var i = 0; i<len;i++){
-                var time_string = docs[i]['time'];
-                var atime = parseInt(time_string.slice(0,2))*60 + parseInt(time_string.slice(3,5));
-                var btime = parseInt(time_string.slice(6,8))*60 + parseInt(time_string.slice(9,11));
-                console.log(atime, btime)
-                if(btime-atime > 240 || btime - atime < 0) illegal.push(docs[i]._id);          
+                try{
+                    var time_string = docs[i]['time'];
+                    var atime = parseInt(time_string.slice(0,2))*60 + parseInt(time_string.slice(3,5));
+                    var btime = parseInt(time_string.slice(6,8))*60 + parseInt(time_string.slice(9,11));
+                    if(btime-atime > 240 || btime - atime < 0) illegal.push(docs[i]._id);
+                }
+                catch(e){
+                    illegal.push(docs[i]._id);
+                }
             }
             
             var filter = { "_id": { $in: illegal} };
@@ -48,10 +52,9 @@ MongoClient.connect(url, (err, client) => {
                     console.log("Fail Update");
                     return;
                 }
-                console.log("Removed " + result.nRemoved + " Entries.");
-                console.log(result);
+                console.log("Done Successfully");
+                client.close(); 
             });
-            
         });
         /*
         var filter = { "_id": { $in: illegal} };

@@ -7,7 +7,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const fs = require('fs');
 const path = require('path');
-const url = "mongodb://localhost:27017"
+const url = "mongodb://140.112.28.194:27017/Movie"
 
 const dbName = "Movie";
 const collectionName = "b04902077";
@@ -28,6 +28,7 @@ MongoClient.connect(url, (err, client) => {
             return;
         }
         collection.insertMany(movieobj);
+        client.close();
     });
 
 
