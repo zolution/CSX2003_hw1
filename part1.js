@@ -31,9 +31,5 @@ MongoClient.connect(url, (err, client) => {
         client.close();
     });
 
-
 });
-
-
-
 

@@ -11,7 +11,6 @@ const url = "mongodb://140.112.28.194:27017/Movie"
 
 const dbName = "Movie";
 const collectionName = "b04902077";
-//console.log(obj[0]);
 
 MongoClient.connect(url, (err, client) => {
     if(err){
@@ -37,9 +36,14 @@ MongoClient.connect(url, (err, client) => {
             for(var i = 0; i<len;i++){
                 try{
                     var time_string = docs[i]['time'];
-                    var atime = parseInt(time_string.slice(0,2))*60 + parseInt(time_string.slice(3,5));
-                    var btime = parseInt(time_string.slice(6,8))*60 + parseInt(time_string.slice(9,11));
-                    if(btime-atime > 240 || btime - atime < 0) illegal.push(docs[i]._id);
+                    if(len(time_string)!=11 || time_string[2]!=':' || time_string[5]!='~' || time_string[8]!=':'){
+                        illegal.push(doc[i]._id);
+                    }
+                    else{
+                        var atime = parseInt(time_string.slice(0,2))*60 + parseInt(time_string.slice(3,5));
+                        var btime = parseInt(time_string.slice(6,8))*60 + parseInt(time_string.slice(9,11));
+                        if(btime-atime > 240 || btime - atime < 0) illegal.push(docs[i]._id);
+                    }
                 }
                 catch(e){
                     illegal.push(docs[i]._id);
@@ -56,21 +60,6 @@ MongoClient.connect(url, (err, client) => {
                 client.close(); 
             });
         });
-        /*
-        var filter = { "_id": { $in: illegal} };
-        collection.remove(filter, (err, result) => {
-            if(err){
-                console.log("Fail Update");
-                return;
-            }
-            console.log("Removed " + result.nRemoved + " Entries.");
-            console.log(result);
-        });*/
     });
-
-
 });
-
-
-
 

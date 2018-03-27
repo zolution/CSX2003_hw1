@@ -11,7 +11,6 @@ const url = "mongodb://140.112.28.194:27017/Movie"
 
 const dbName = "Movie";
 const collectionName = "b04902077";
-//console.log(obj[0]);
 
 MongoClient.connect(url, (err, client) => {
     if(err){
@@ -37,12 +36,6 @@ MongoClient.connect(url, (err, client) => {
             console.log("Updated " + result.modifiedCount + " Entries.");
             client.close();
         });
-
     });
-
-
 });
-
-
-
 
