@@ -34,9 +34,9 @@ MongoClient.connect(url, (err, client) => {
             }
             var len = docs.length;
             for(var i = 0; i<len;i++){
+                var time_string = docs[i]['time'];
                 try{
-                    var time_string = docs[i]['time'];
-                    if(len(time_string)!=11 || time_string[2]!=':' || time_string[5]!='~' || time_string[8]!=':'){
+                    if(time_string.length!=11 || time_string[2]!=':' || time_string[5]!='~' || time_string[8]!=':'){
                         illegal.push(doc[i]._id);
                     }
                     else{
